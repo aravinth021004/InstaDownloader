@@ -10,6 +10,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { useState } from "react";
+import Image from "next/image";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -63,10 +64,12 @@ const Navbar = () => {
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link href={"/"}>
-            <img
+            <Image
               className="h-8 w-auto"
               src="https://upload.wikimedia.org/wikipedia/commons/2/28/Instagram_logo.png"
               alt="Your Company"
+              width={32} // You can adjust this
+              height={32} // Adjust as needed to maintain aspect ratio
             />
           </Link>
           <button
@@ -87,9 +90,9 @@ const Navbar = () => {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M1 1h15M1 7h15M1 13h15"
               />
             </svg>
