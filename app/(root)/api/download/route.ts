@@ -12,37 +12,26 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const url = "https://save-free.app/wp-json/visolix/api/download";
-
+  const url =
+    "https://insta-save.net/content.php?url=" +
+    encodeURIComponent(instagramLink);
 
   try {
-    const response = await axios.post(
-      url,
-      {
-        url: instagramLink,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.get(url);
     // console.log(response.data.data);
-    const $ = cheerio.load(response.data.data); // make sure response.data.data is the HTML string
+    // console.log(response.data.html);
+    const $ = cheerio.load(response.data.html); 
+
 
     // Select the <a> tag with all specified classes inside the visolix-download-bottom div
-    const videoUrl = $(
-      ".visolix-download-bottom a.visolix-btn.visolix-download-media.visolix-flex-center.visolix-item-download"
-    ).attr("href");
-
-    const previewImageUrl = $('.visolix-media-box img').eq(1).attr('src');
-
-
+    const videoUrl = $('video > source').attr('src');
 
     // console.log("Video URL:", videoUrl);
     // console.log('Preview Image URL:', previewImageUrl);
 
-    return new Response(JSON.stringify({ success: true, videoUrl, previewImageUrl }));
+    return new Response(
+      JSON.stringify({ success: true, videoUrl })
+    );
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ error: "Something went wrong" }), {

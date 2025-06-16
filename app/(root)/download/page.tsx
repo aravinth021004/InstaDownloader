@@ -3,14 +3,14 @@
 import VideoDisplay from "@/components/VideoInfo";
 import { useState } from "react";
 
-
 export default function Downloader() {
   const [link, setLink] = useState<string>("");
   const [videoUrl, setVideoUrl] = useState<string>("");
-  const [previewImageUrl, setImageUrl] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleDownload = async () => {
+    setIsLoading(true);
     setError("");
     setVideoUrl("");
 
@@ -27,7 +27,6 @@ export default function Downloader() {
         );
         const data = await res.json();
         setVideoUrl(data.videoUrl);
-        setImageUrl(data.previewImageUrl);
 
         // if (res.ok) {
         //   setVideoUrl(data.videoUrl);
@@ -46,6 +45,8 @@ export default function Downloader() {
         // }
       } catch (err) {
         setError("Error fetching video" + err);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -57,18 +58,29 @@ export default function Downloader() {
         placeholder="Paste Instagram Reel URL"
         value={link}
         onChange={(e) => setLink(e.target.value)}
-        className="border border-gray-300 rounded p-2 w-full"
+        className="border text-white border-gray-300 rounded p-2 w-full"
       />
       <button
         onClick={handleDownload}
         className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
+        disabled={isLoading}
+        style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
       >
         Open
       </button>
 
-      {error && <p className="text-red-600 mt-2">{error}</p>}
+      {isLoading ? (
+        <div className="flex items-center justify-center">
+          <div className="loader border-t-2 border-white border-solid rounded-full w-5 h-5 animate-spin mr-2"></div>
+          Loading...
+        </div>
+      ) : (
+        error ? (
+          <div className="text-red-500 mt-4">{error}</div>
+        ) : (
+          videoUrl && <VideoDisplay videoUrl={videoUrl} />
+        ))}
 
-      {videoUrl && previewImageUrl && <VideoDisplay previewImageUrl={previewImageUrl} videoUrl={videoUrl} />}
 
       {/* {videoUrl && (
         <div className="mt-4">
