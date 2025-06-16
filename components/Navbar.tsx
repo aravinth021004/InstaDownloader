@@ -68,8 +68,8 @@ const Navbar = () => {
               className="h-8 w-auto"
               src="https://upload.wikimedia.org/wikipedia/commons/2/28/Instagram_logo.png"
               alt="Your Company"
-              width={32} // You can adjust this
-              height={32} // Adjust as needed to maintain aspect ratio
+              width={32}
+              height={32}
             />
           </Link>
           <button
