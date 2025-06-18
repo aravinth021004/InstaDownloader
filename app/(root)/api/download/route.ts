@@ -1,6 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { NextRequest, NextResponse } from "next/server";
+import { createPost } from "../../actions/action";
+import VideoData from "../../Types/VideoData";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -26,43 +29,43 @@ export async function GET(req: NextRequest) {
 
     const username = $("#user_info p.mb-0.h4").text().trim();
     const name = $("#user_info p.text-muted").text().trim();
-    const profilePicture = $("img.rounded-circle").attr("src");
+    const profilePicture = $("img.rounded-circle").attr("src") ?? "";
     // const description = $("#download_content .mt-3 p.text-sm").html()?.trim();
-    const image = $("video").attr("poster");
-    const videoUrl = $("video > source").attr("src");
+    const image = $("video").attr("poster") ?? "";
+    const videoUrl = $("video > source").attr("src") ?? "";
 
     let description = "";
-    let likes = "";
-    let comments = "";
-    let numOfYears = "";
+    const likes = 0;
+    const comments = 0;
+    const numOfYears = 0;
 
     $("#download_content .card").each((_, cardElem) => {
       const card = $(cardElem);
-      description = card.find(".mt-3 p.text-sm").text().trim();
+      description = card.find(".mt-3 p.text-sm").text().trim() ?? "";
 
       // Stats: likes, comments, years
-      const statSmallTags = card.find(
-        ".d-flex.justify-content-between.text-sm small"
-      );
+      // const statSmallTags = card.find(
+      //   ".d-flex.justify-content-between.text-sm small"
+      // );
 
-      likes = statSmallTags
-        .eq(0)
-        .contents()
-        .filter((_, el) => el.type === "text")
-        .text()
-        .trim();
-      comments = statSmallTags
-        .eq(1)
-        .contents()
-        .filter((_, el) => el.type === "text")
-        .text()
-        .trim();
-      numOfYears = statSmallTags
-        .eq(2)
-        .contents()
-        .filter((_, el) => el.type === "text")
-        .text()
-        .trim();
+      // likes = statSmallTags
+      //   .eq(0)
+      //   .contents()
+      //   .filter((_, el) => el.type === "text")
+      //   .text()
+      //   .trim() ?? "";
+      // comments = statSmallTags
+      //   .eq(1)
+      //   .contents()
+      //   .filter((_, el) => el.type === "text")
+      //   .text()
+      //   .trim() ?? "";
+      // numOfYears = statSmallTags
+      //   .eq(2)
+      //   .contents()
+      //   .filter((_, el) => el.type === "text")
+      //   .text()
+      //   .trim() ?? "";
     });
     //==================================================================
 
@@ -79,7 +82,7 @@ export async function GET(req: NextRequest) {
     // const videoUrl = $('video > source').attr('src');
 
     // console.log("Video URL:", videoUrl);
-    const data = {
+    const data: VideoData = {
       username,
       name,
       profilePicture,
@@ -93,9 +96,23 @@ export async function GET(req: NextRequest) {
 
     // console.log("Data:", data.videoUrl);
 
-    return NextResponse.json({ success: true, videoUrl: data.videoUrl, result: data });
+    const user = await currentUser();
+
+    if (user) {
+      const userId = user?.id;
+      createPost(userId, data);
+    }
+
+    return NextResponse.json({
+      success: true,
+      videoUrl: data.videoUrl,
+      result: data,
+    });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

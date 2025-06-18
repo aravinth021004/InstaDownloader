@@ -30,7 +30,7 @@ export default function Downloader() {
           const data = await res.json();
           // console.log("Data:", data);
           setResult(data.result);
-          console.log("Result:", result);
+          // console.log("Result:", result);
           // if (result) {
             // setVideoUrl(result.videoUrl);
             // console.log("Result Video:", result.videoUrl);

@@ -1,3 +1,4 @@
+"use client";
 import VideoData from "@/app/(root)/Types/VideoData";
 import {
   Card,
@@ -51,7 +52,7 @@ export function CardDemo({ result }: { result: VideoData | null }) {
               <video
                 controls
                 src={result.videoUrl}
-                className="w-full max-h-[40vh] rounded-lg shadow-lg object-contain"
+                className="w-full max-h-[17vh] rounded-lg shadow-lg object-contain"
               />
             </div>
             <div className="text-center grid gap-2">

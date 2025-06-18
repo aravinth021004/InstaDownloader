@@ -4,9 +4,9 @@ interface VideoData {
   profilePicture: string;
   description: string;
   image: string;
-  likes: string;
-  comments: string;
-  numOfYears: string;
+  likes: number;
+  comments: number;
+  numOfYears: number;
   videoUrl: string;
 }
 export default VideoData;

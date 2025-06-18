@@ -1,6 +1,6 @@
 import { PrismaClient } from "@/generated/prisma";
 import { User } from "@clerk/backend"
-import { Post } from "../Types/Post";
+import VideoData from "../Types/VideoData";
 
 const prisma = new PrismaClient();
 export async function findUserById(userId: string) {
@@ -34,7 +34,7 @@ export async function createUser(user: User) {
     })
 }
 
-export async function createPost(userId: string, post: Post) {
+export async function createPost(userId: string, post: VideoData) {
 
     await prisma.post.create({
         data: {
@@ -53,4 +53,13 @@ export async function createPost(userId: string, post: Post) {
         }
 
     })
+}
+
+export async function getAllPosts(userId: string) {
+    const posts = await prisma.post.findMany({
+        where: {
+            userId: userId
+        }
+    })
+    return posts;
 }
