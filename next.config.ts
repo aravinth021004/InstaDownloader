@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'save-free.app',
+        hostname: 'insta-save.net',
       },
       {
         protocol: 'https',
