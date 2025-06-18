@@ -1,6 +1,8 @@
+"use server";
 import { PrismaClient } from "@/generated/prisma";
 import { User } from "@clerk/backend"
 import VideoData from "../Types/VideoData";
+import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
 export async function findUserById(userId: string) {
@@ -36,6 +38,10 @@ export async function createUser(user: User) {
 
 export async function createPost(userId: string, post: VideoData) {
 
+    const tempPost = await getPostByVideoUrl(post.videoUrl);
+
+    if(tempPost) return;
+
     await prisma.post.create({
         data: {
             username: post.username,
@@ -62,4 +68,23 @@ export async function getAllPosts(userId: string) {
         }
     })
     return posts;
+}
+
+export async function deletePostByResult(result: VideoData | null) {
+
+    await prisma.post.delete({
+        where: {
+            videoUrl: result?.videoUrl,
+        }
+    })
+    revalidatePath('/')
+}
+
+export async function getPostByVideoUrl(videoUrl: string) {
+    const post = await prisma.post.findUnique({
+        where: {
+            videoUrl: videoUrl
+        }
+    })
+    return post;
 }

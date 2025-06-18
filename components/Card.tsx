@@ -1,8 +1,9 @@
 "use client";
+import { deletePostByResult } from "@/app/(root)/actions/action";
 import VideoData from "@/app/(root)/Types/VideoData";
 import {
   Card,
-  //   CardAction,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -13,13 +14,17 @@ import Image from "next/image";
 
 export function CardDemo({ result }: { result: VideoData | null }) {
 
-    function downloadVideo(videoUrl : string) {
-        const link = document.createElement('a');
-        link.href = videoUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+  const deletePost = async () => {
+    await deletePostByResult(result);
+  }
+
+  function downloadVideo(videoUrl: string) {
+    const link = document.createElement("a");
+    link.href = videoUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
   return (
     <Card className="w-full max-w-sm border-white">
@@ -36,9 +41,15 @@ export function CardDemo({ result }: { result: VideoData | null }) {
           <CardDescription className="text-white">
             {result.username}
           </CardDescription>
-          {/* <CardAction>
-          
-        </CardAction> */}
+          <CardAction>
+            <button
+              onClick={deletePost}
+              type="button"
+              className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+            >
+              Delete
+            </button>
+          </CardAction>
         </CardHeader>
       )}
       {result && (
@@ -58,7 +69,7 @@ export function CardDemo({ result }: { result: VideoData | null }) {
             <div className="text-center grid gap-2">
               <button
                 onClick={() => {
-                    downloadVideo(result.videoUrl)
+                  downloadVideo(result.videoUrl);
                 }}
                 className="inline-block px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700"
               >
